@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "jenkins-td" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
-  cpu                      = "256"
+  cpu                      = "512"
   memory                   = "1024"
   requires_compatibilities = ["FARGATE"]
 
@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "jenkins-td" {
   container_definitions = <<TASK_DEFINITION
 [
     {
-        "cpu": 256,
+        "cpu": 512,
         "environment": [
             {"name": "JENKINS_HOME", "value": "/var/jenkins_home"}
         ],
