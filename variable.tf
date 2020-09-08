@@ -1,17 +1,17 @@
 variable "access_key" {
-  type = "string"
+  type        = "string"
   description = "AWS access_key id"
 }
 
 variable "secret_key" {
-  type = "string"
+  type        = "string"
   description = "AWS secret_key id"
 }
 
 variable "region" {
-  type = "string"
+  type        = "string"
   description = "AWS region"
-  default = "us-east-1"
+  default     = "us-east-1"
 }
 
 variable "vpc_name" {}

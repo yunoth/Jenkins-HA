@@ -1,6 +1,6 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "role-name"
- 
+
   assume_role_policy = <<EOF
 {
  "Version": "2012-10-17",
@@ -19,7 +19,7 @@ EOF
 }
 resource "aws_iam_role" "ecs_task_role" {
   name = "role-name-task"
- 
+
   assume_role_policy = <<EOF
 {
  "Version": "2012-10-17",
@@ -36,7 +36,7 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 EOF
 }
- 
+
 
 resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name

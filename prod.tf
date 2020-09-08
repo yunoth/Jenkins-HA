@@ -8,16 +8,16 @@ resource "aws_s3_bucket" "b1" {
 }
 
 resource "aws_security_group" "prod-alb-sg" {
-  name        = "prod-alb-sg"
-  vpc_id      = module.prod-vpc.vpc_id
+  name   = "prod-alb-sg"
+  vpc_id = module.prod-vpc.vpc_id
   tags = {
     Name = "prod-alb-sg"
   }
 }
 
 resource "aws_security_group" "prod-instance-sg" {
-  name        = "prod-instance-sg"
-  vpc_id      = module.prod-vpc.vpc_id
+  name   = "prod-instance-sg"
+  vpc_id = module.prod-vpc.vpc_id
   tags = {
     Name = "prod-instance-sg"
   }
@@ -27,31 +27,31 @@ resource "aws_security_group_rule" "prod-alb-rule_in" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.prod-alb-sg.id
 }
 resource "aws_security_group_rule" "prod-alb-rule" {
-  type              = "egress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
+  type                     = "egress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.prod-instance-sg.id
-  security_group_id = aws_security_group.prod-alb-sg.id
+  security_group_id        = aws_security_group.prod-alb-sg.id
 }
 
 resource "aws_security_group_rule" "prod-instance-rule" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.prod-alb-sg.id
-  security_group_id = aws_security_group.prod-instance-sg.id
+  security_group_id        = aws_security_group.prod-instance-sg.id
 }
 
 module "prod-alb" {
-  source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
-  name = "prod-alb"
+  source             = "terraform-aws-modules/alb/aws"
+  version            = "~> 5.0"
+  name               = "prod-alb"
   load_balancer_type = "application"
   vpc_id             = module.prod-vpc.vpc_id
   subnets            = module.prod-vpc.public_subnets
@@ -80,9 +80,9 @@ module "prod-alb" {
 }
 
 module "prod-ec2" {
-  source = "terraform-aws-modules/ec2-instance/aws"
-  name           = "prod-ec2"
-  instance_count = 1
+  source                 = "terraform-aws-modules/ec2-instance/aws"
+  name                   = "prod-ec2"
+  instance_count         = 1
   ami                    = "ami-0c94855ba95c71c99"
   instance_type          = "t3.micro"
   key_name               = "pemkey1"
@@ -91,7 +91,7 @@ module "prod-ec2" {
   subnet_id              = module.prod-vpc.private_subnets[0]
 
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Environment = "prod"
   }
 }

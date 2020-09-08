@@ -8,16 +8,16 @@ resource "aws_s3_bucket" "b2" {
 }
 
 resource "aws_security_group" "stag-alb-sg" {
-  name        = "stag-alb-sg"
-  vpc_id      = module.stag-vpc.vpc_id
+  name   = "stag-alb-sg"
+  vpc_id = module.stag-vpc.vpc_id
   tags = {
     Name = "stag-alb-sg"
   }
 }
 
 resource "aws_security_group" "stag-instance-sg" {
-  name        = "stag-instance-sg"
-  vpc_id      = module.stag-vpc.vpc_id
+  name   = "stag-instance-sg"
+  vpc_id = module.stag-vpc.vpc_id
   tags = {
     Name = "stag-instance-sg"
   }
@@ -27,31 +27,31 @@ resource "aws_security_group_rule" "stag-alb-rule_in" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.stag-alb-sg.id
 }
 resource "aws_security_group_rule" "stag-alb-rule" {
-  type              = "egress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
+  type                     = "egress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.stag-instance-sg.id
-  security_group_id = aws_security_group.stag-alb-sg.id
+  security_group_id        = aws_security_group.stag-alb-sg.id
 }
 
 resource "aws_security_group_rule" "stag-instance-rule" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.stag-alb-sg.id
-  security_group_id = aws_security_group.stag-instance-sg.id
+  security_group_id        = aws_security_group.stag-instance-sg.id
 }
 
 module "stag-alb" {
-  source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
-  name = "stag-alb"
+  source             = "terraform-aws-modules/alb/aws"
+  version            = "~> 5.0"
+  name               = "stag-alb"
   load_balancer_type = "application"
   vpc_id             = module.stag-vpc.vpc_id
   subnets            = module.stag-vpc.public_subnets
