@@ -68,7 +68,7 @@ TASK_DEFINITION
 resource "aws_security_group" "task-sg" {
   name        = "jenkins-task-sg"
   description = "Allow jenkins inbound traffic to task"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.devops-vpc.vpc_id
   ingress {
     from_port   = 8080
     to_port     = 8080
@@ -97,7 +97,7 @@ resource "aws_ecs_service" "jenkins-service" {
   launch_type                        = "FARGATE"
   network_configuration {
     security_groups  = [aws_security_group.task-sg.id]
-    subnets          = module.vpc.public_subnets
+    subnets          = module.devops-vpc.public_subnets
     assign_public_ip = true
   }
 }

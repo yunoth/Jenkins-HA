@@ -4,20 +4,68 @@ provider "aws" {
  region = var.region
 }
 
-module "vpc" {
+module "devops-vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "devops_vpc"
-  cidr = var.vpc_cidr_block
+  cidr = var.devops_vpc_cidr_block
   azs             = ["us-east-1a", "us-east-1b"]
-  private_subnets = var.private_subnets
-  public_subnets  = var.public_subnets
+  private_subnets = var.devops_private_subnets
+  public_subnets  = var.devops_public_subnets
   enable_dns_hostnames = true
   enable_nat_gateway = true 
   tags = {
     Terraform = "true"
-    Environment = "dev"
+    Environment = "devops-ci"
   }
+}
+
+
+module "stag-vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "staging_vpc"
+  cidr = var.stag_vpc_cidr_block
+  azs             = ["us-east-1a", "us-east-1b"]
+  private_subnets = var.stag_private_subnets
+  public_subnets  = var.stag_public_subnets
+  enable_dns_hostnames = true
+  enable_nat_gateway = true 
+  tags = {
+    Terraform = "true"
+    Environment = "staging"
+  }
+}
+
+module "prod-vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "prod_vpc"
+  cidr = var.prod_vpc_cidr_block
+  azs             = ["us-east-1a", "us-east-1b"]
+  private_subnets = var.prod_private_subnets
+  public_subnets  = var.prod_public_subnets
+  enable_dns_hostnames = true
+  enable_nat_gateway = true 
+  tags = {
+    Terraform = "true"
+    Environment = "prod"
+  }
+}
+
+
+resource "aws_vpc_peering_connection" "prod-peering" {
+  #peer_owner_id = var.peer_owner_id
+  peer_vpc_id   = module.prod-vpc.vpc_id
+  vpc_id        = module.devops-vpc.vpc_id
+  auto_accept   = true
+}
+
+resource "aws_vpc_peering_connection" "stag-peering" {
+  #peer_owner_id = var.peer_owner_id
+  peer_vpc_id   = module.prod-vpc.vpc_id
+  vpc_id        = module.devops-vpc.vpc_id
+  auto_accept   = true
 }
 
 data "http" "myip" {
@@ -38,3 +86,5 @@ resource "local_file" "public_key_openssh" {
   filename = "/root/pemkey_client.pem"
   file_permission = "0400"
 }
+
+

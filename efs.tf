@@ -8,7 +8,7 @@ resource "aws_efs_file_system" "jenkins_data" {
 resource "aws_security_group" "jenkins_data_allow_nfs_access" {
   name        = "jenkins-efs-allow-nfs"
   description = "Allow NFS inbound traffic to EFS"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.devops-vpc.vpc_id
   egress {
     from_port   = 0
     to_port     = 0
@@ -32,6 +32,6 @@ resource "aws_security_group_rule" "jenkins_data_allow_nfs_access_rule" {
 resource "aws_efs_mount_target" "jenkins_data_mount_targets" {
   count           = 2
   file_system_id  = aws_efs_file_system.jenkins_data.id
-  subnet_id       = element(module.vpc.private_subnets, count.index)
+  subnet_id       = element(module.devops-vpc.private_subnets, count.index)
   security_groups = [aws_security_group.jenkins_data_allow_nfs_access.id]
 }
