@@ -121,7 +121,6 @@ module "jenkins-alb" {
   }
   target_groups = [
     {
-      name_prefix      = "jenkin-"
       backend_protocol = "HTTP"
       backend_port     = 8080
       target_type      = "ip"
@@ -154,7 +153,7 @@ resource "aws_ecs_service" "jenkins-service" {
     assign_public_ip = false
   }
   load_balancer {
-    target_group_arn = module.jenkins-alb.target_group_arn[0]
+    target_group_arn = module.jenkins-alb.target_group_arns[0]
     container_name   = "jenkins"
     container_port   = 8080
   }
